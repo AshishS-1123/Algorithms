@@ -81,6 +81,59 @@ void quick_sort_recursive(int* array, int start, int end)
     }
 }
 
+// Function : quick_sort_iterative
+// Description : sorts the given array iteratively using quick sort
+// Parameters : array -> pointer to array to be sorted
+//              start -> starting index form where to sort
+//              end -> ending index upto which to sort
+// Return Value : void
+void quick_sort_iterative(int* array, int start, int end)
+{
+    // create a stack to be used for storing the function calls
+    int function_stack[ end - start + 1 ];
+    // top variable to point to last element in stack
+    int top = -1;
+
+    // insert the current end value into the stack
+    function_stack[ ++top ] = end;
+    // insert the current start value into the stack
+    function_stack[ ++top ] = start;
+
+    // repeat until all elements in the stack have been processed
+    while( top > 0 )
+    {
+        // get the topmost start value from the stack
+        start = function_stack[ top-- ];
+        // get the topmost end value from the stack
+        end = function_stack[ top-- ];
+
+        // partition the array between start and end value and get partition index
+        int partition_index = get_partition_index( array, start, end);
+
+        // if there are any elements to the left of partition index,
+        if ( partition_index - 1 > start )
+        {
+            // process elements to left of partition index
+
+            // insert the end value of left subarray into stack
+            function_stack[ ++top ] = partition_index - 1;
+            // insert the start value of left subarray into stack
+            function_stack[ ++top ] = start;
+        }
+
+        // if there are any elements to the right of the partition index,
+        if ( partition_index + 1 < end )
+        {
+            // process elements to right of the partition index
+
+            // insert the end value of right subarray
+            function_stack[ ++top ] = end;
+            // insert the start value of right subaray
+            function_stack[ ++top ] = partition_index + 1;
+        }
+    }
+}
+
 // Function : print_array
 // Description : prints all elements of the array
 // Parameters : array -> pointer to array to be printed
@@ -121,6 +174,21 @@ int main()
     cout << "  After Recursion Sorting : ";
     print_array(array_recursion, length);
 
+    cout << "\n...........................................................\n";
+
+    // NOW SORT USING ITERATION
+    cout << "\nUsing Iterative Quick Sort ...\n\n";
+
+    // print array before sorting
+    cout << " Before Iterative Sorting : ";
+    print_array(array_iteration, length);
+
+    // sort the array using iterative quick sort
+    quick_sort_iterative(array_iteration, 0, length - 1);
+
+    // print array after sorting
+    cout << "  After Iterative Sorting : ";
+    print_array(array_iteration, length);
 
     return 0;
 }
